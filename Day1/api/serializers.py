@@ -21,6 +21,7 @@ class ProductSerializer(serializers.ModelSerializer):
         return value
 
 class OrderItemSerializer(serializers.ModelSerializer):
+    product = ProductSerializer() #Explicit Reference to the Product .it adds the product with it's product detail in the nested serialized structure
     class Meta:
         model = OrderItem
         fields = ('product', 'quantity')
