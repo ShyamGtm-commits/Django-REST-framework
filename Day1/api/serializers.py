@@ -31,7 +31,12 @@ class OrderItemSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = OrderItem
-        fields = ('product_name','product_price', 'quantity')
+        fields = (
+            'product_name',
+            'product_price', 
+            'quantity',
+            'item_subtotal'
+        )
 class OrderSerializer(serializers.ModelSerializer):
     items = OrderItemSerializer(many=True, read_only=True)
     total_price = serializers.SerializerMethodField(method_name='total')
@@ -49,3 +54,9 @@ class OrderSerializer(serializers.ModelSerializer):
             'items',
             'total_price'
             )
+        
+class ProductInfoSerializer(serializers.Serializer):
+    # get all products, counts and the max_price
+    products = ProductSerializer(many= True)
+    count = serializers.IntegerField()
+    max_price = serializers.FloatField()
