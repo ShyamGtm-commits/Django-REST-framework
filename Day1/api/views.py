@@ -32,7 +32,9 @@ def product_detail(request, pk):
 
 @api_view(['GET'])
 def order_list(request):
-    orders = Order.objects.all()
+    orders = Order.objects.prefetch_related(  # here the prefetch_related is used to reduce the time taken to make the queries and the queries numbers are reduced that were made bigger by the nested serializer
+        'items', 'items__product' # items__product is another one that makes this possible and reduces the nested again
+        ).all() # we can just kill this items too and later on this another one all can also be killed that isn't anything that matters that seriously
     serializer = OrderSerializer(orders, many=True)
     return Response(serializer.data)
 
