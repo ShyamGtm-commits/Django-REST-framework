@@ -4,6 +4,19 @@ from api.serializers import ProductSerializer, OrderSerializer, ProductInfoSeria
 from api.models import Product, Order, OrderItem
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
+from rest_framework.reverse import reverse  
+
+@api_view(['GET'])
+def home_view(request):
+    return Response({
+        'message': 'Welcome to My DRF API',
+        'endpoints': {
+            'products_list': reverse('product-list', request=request),
+            'products_info': reverse('product-info', request=request),
+            'orders_list': reverse('order-list', request=request),
+        },
+        'instructions': 'Use these endpoints to interact with the API'
+    })
 
 @api_view(['GET'])
 def product_list(request):
