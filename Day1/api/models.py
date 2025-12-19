@@ -33,7 +33,7 @@ class Order(models.Model):
         max_length=10, 
         choices=StatusChoices.choices,
         default=StatusChoices.PENDING
-        )
+    )
         
     products = models.ManyToManyField(Product, through="OrderItem", related_name='orders')
 
@@ -54,5 +54,5 @@ class OrderItem(models.Model):
         return self.product.price * self.quantity
     
     def __str__(self):
-        return f"{self.quantity} X {self.product.name} in Order {self.order.order.id}"
+        return f"{self.quantity} X {self.product.name} in Order {self.order.order_id}"
         

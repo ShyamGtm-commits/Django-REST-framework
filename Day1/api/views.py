@@ -7,17 +7,17 @@ from rest_framework.decorators import api_view
 from rest_framework.reverse import reverse  
 from rest_framework import generics
 
-# @api_view(['GET'])
-# def home_view(request):
-#     return Response({
-#         'message': 'Welcome to My DRF API',
-#         'endpoints': {
-#             'products_list': reverse('product-list', request=request),
-#             'products_info': reverse('product-info', request=request),
-#             'orders_list': reverse('order-list', request=request),
-#         },
-#         'instructions': 'Use these endpoints to interact with the API'
-#     })
+@api_view(['GET'])
+def home_view(request):
+    return Response({
+        'message': 'Welcome to My DRF API',
+        'endpoints': {
+            'products_list': reverse('product-list', request=request),
+            'products_info': reverse('product-info', request=request),
+            'orders_list': reverse('order-list', request=request),
+        },
+        'instructions': 'Use these endpoints to interact with the API'
+    })
 
 class ProductListAPIView(generics.ListAPIView):
     queryset = Product.objects.filter(stock__gt=0) # filter is used to show the products that only have the stock available and exclude is opposite
@@ -41,9 +41,19 @@ class ProductDetailListAPIView(generics.RetrieveAPIView):
 #     return Response(serializer.data)
 
 class OrderListAPIVIew(generics.ListAPIView):
-    queryset = Order.objects.all()
+    queryset = Order.objects.prefetch_related('items__product')
     serializer_class = OrderSerializer
-    
+
+class UserOrderListAPIVIew(generics.ListAPIView):
+    queryset = Order.objects.prefetch_related('items__product')
+    serializer_class = OrderSerializer
+
+    def get_queryset(self):
+        user = self.request.user
+        qs = super().get_queryset()
+        return qs.filter(user=self.request.user)
+
+
 # @api_view(['GET'])
 # def order_list(request):
 #     orders = Order.objects.prefetch_related(  # here the prefetch_related is used to reduce the time taken to make the queries and the queries numbers are reduced that were made bigger by the nested serializer
