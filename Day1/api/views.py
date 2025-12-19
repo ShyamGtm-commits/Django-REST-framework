@@ -20,7 +20,7 @@ from rest_framework import generics
 #     })
 
 class ProductListAPIView(generics.ListAPIView):
-    queryset = Product.objects.all()
+    queryset = Product.objects.filter(stock__gt=0) # filter is used to show the products that only have the stock available and exclude is opposite
     serializer_class = ProductSerializer
 
 # @api_view(['GET'])
@@ -32,6 +32,7 @@ class ProductListAPIView(generics.ListAPIView):
 class ProductDetailListAPIView(generics.RetrieveAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
+    lookup_url_kwarg = 'product_id'
 
 # @api_view(['GET'])
 # def product_detail(request, pk):
@@ -39,13 +40,17 @@ class ProductDetailListAPIView(generics.RetrieveAPIView):
 #     serializer = ProductSerializer(product)
 #     return Response(serializer.data)
 
-@api_view(['GET'])
-def order_list(request):
-    orders = Order.objects.prefetch_related(  # here the prefetch_related is used to reduce the time taken to make the queries and the queries numbers are reduced that were made bigger by the nested serializer
-            'items__product' # items__product is another one that makes this possible and reduces the nested again so we can discard 'items'
-        ) # we can just kill this .all() items too and later on this another one all can also be killed that isn't anything that matters that seriously
-    serializer = OrderSerializer(orders, many=True)
-    return Response(serializer.data)
+class OrderListAPIVIew(generics.ListAPIView):
+    queryset = Order.objects.all()
+    serializer_class = OrderSerializer
+    
+# @api_view(['GET'])
+# def order_list(request):
+#     orders = Order.objects.prefetch_related(  # here the prefetch_related is used to reduce the time taken to make the queries and the queries numbers are reduced that were made bigger by the nested serializer
+#             'items__product' # items__product is another one that makes this possible and reduces the nested again so we can discard 'items'
+#         ) # we can just kill this .all() items too and later on this another one all can also be killed that isn't anything that matters that seriously
+#     serializer = OrderSerializer(orders, many=True)
+#     return Response(serializer.data)
 
 @api_view(['GET'])
 def product_info(request):
