@@ -6,6 +6,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework.reverse import reverse  
 from rest_framework import generics
+from rest_framework.permissions import IsAuthenticated
 
 @api_view(['GET'])
 def home_view(request):
@@ -47,6 +48,7 @@ class OrderListAPIVIew(generics.ListAPIView):
 class UserOrderListAPIVIew(generics.ListAPIView):
     queryset = Order.objects.prefetch_related('items__product')
     serializer_class = OrderSerializer
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         user = self.request.user
