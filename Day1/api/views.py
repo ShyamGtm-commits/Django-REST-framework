@@ -7,6 +7,7 @@ from rest_framework.decorators import api_view
 from rest_framework.reverse import reverse  
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.views import APIView
 
 @api_view(['GET'])
 def home_view(request):
@@ -64,12 +65,13 @@ class UserOrderListAPIVIew(generics.ListAPIView):
 #     serializer = OrderSerializer(orders, many=True)
 #     return Response(serializer.data)
 
-@api_view(['GET'])
-def product_info(request):
-    products = Product.objects.all()
-    serializer = ProductInfoSerializer({
-        'products': products,
-        'count': len(products),
-        'max_price': products.aggregate(max_price = Max('price'))['max_price'] #must get the piece of the aggregated data out of the dictionary by indexing in the key name['max_price]
-    })
-    return Response(serializer.data)
+class ProductInfoAPIView(APIView):
+    def get(self, request):
+        products = Product.objects.all()
+        serializer = ProductInfoSerializer({
+            'products': products,
+            'count': len(products),
+            'max_price': products.aggregate(max_price = Max('price'))['max_price'] #must get the piece of the aggregated data out of the dictionary by indexing in the key name['max_price]
+        })
+        return Response(serializer.data)
+
