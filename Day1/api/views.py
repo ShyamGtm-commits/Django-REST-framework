@@ -4,10 +4,11 @@ from api.serializers import ProductSerializer, OrderSerializer, ProductInfoSeria
 from api.models import Product, Order, OrderItem
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
-from rest_framework.reverse import reverse  
+from rest_framework.reverse import reverse
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
+
 
 @api_view(['GET'])
 def home_view(request):
@@ -21,15 +22,20 @@ def home_view(request):
         'instructions': 'Use these endpoints to interact with the API'
     })
 
-class ProductListAPIView(generics.ListAPIView):
-    queryset = Product.objects.filter(stock__gt=0) # filter is used to show the products that only have the stock available and exclude is opposite
+
+class ProductListCreateAPIView(generics.ListCreateAPIView):
+    queryset = Product.objects.all()
     serializer_class = ProductSerializer
+
+
+
 
 # @api_view(['GET'])
 # def product_list(request):
 #     products = Product.objects.all()
 #     serializer = ProductSerializer(products, many=True)
 #     return Response(serializer.data)
+
 
 class ProductDetailListAPIView(generics.RetrieveAPIView):
     queryset = Product.objects.all()
@@ -42,9 +48,11 @@ class ProductDetailListAPIView(generics.RetrieveAPIView):
 #     serializer = ProductSerializer(product)
 #     return Response(serializer.data)
 
+
 class OrderListAPIVIew(generics.ListAPIView):
     queryset = Order.objects.prefetch_related('items__product')
     serializer_class = OrderSerializer
+
 
 class UserOrderListAPIVIew(generics.ListAPIView):
     queryset = Order.objects.prefetch_related('items__product')
@@ -71,7 +79,9 @@ class ProductInfoAPIView(APIView):
         serializer = ProductInfoSerializer({
             'products': products,
             'count': len(products),
-            'max_price': products.aggregate(max_price = Max('price'))['max_price'] #must get the piece of the aggregated data out of the dictionary by indexing in the key name['max_price]
+            # must get the piece of the aggregated data out of the dictionary by indexing in the key name['max_price]
+            'max_price': products.aggregate(max_price=Max('price'))['max_price']
         })
         return Response(serializer.data)
 
+# this is for making the crud functions here in the django rest framework
