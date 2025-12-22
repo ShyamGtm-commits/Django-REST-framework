@@ -2,6 +2,26 @@ GET http://127.0.0.1:8000/products/ HTTP/1.1
 
 ###
 
+GET http://127.0.0.1:8000/products/2/ HTTP/1.1
+
+###
+
+DELETE http://127.0.0.1:8000/products/3/ HTTP/1.1
+
+###
+PUT http://127.0.0.1:8000/products/8/ HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzY2Mzk5MDkzLCJpYXQiOjE3NjYzOTg3OTMsImp0aSI6ImE4Mzg2YTNlNTIwMTRjMjE4YjFjMzA2ZjdlNTJkNDAzIiwidXNlcl9pZCI6IjEifQ.JjqlRMeGOqnn1cQLiV1qqHViWct5MDnm8DzNnIdnJPE
+
+{
+    "name": "Dumbbell",
+    "price": "100",
+    "description": "It is a tool that will help every elephants out there 🤣🤣",
+    "stock": "10"
+}
+
+###
+
 POST http://127.0.0.1:8000/products/ HTTP/1.1
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzY2MzkwMzU4LCJpYXQiOjE3NjYzOTAwNTgsImp0aSI6Ijk3NGU4NWI5MjhmYjQ1MTI5ZWNmMWFlN2MwNjQ3MGRmIiwidXNlcl9pZCI6IjEifQ.9cyuPK0VFjFX_S5kcTI19lWgxEMfSlnRZnxCtAdf_lY
@@ -27,3 +47,13 @@ Content-Type: application/json
 
 GET http://127.0.0.1:8000/user-orders/ HTTP/1.1
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzY2MzkwMzU4LCJpYXQiOjE3NjYzOTAwNTgsImp0aSI6Ijk3NGU4NWI5MjhmYjQ1MTI5ZWNmMWFlN2MwNjQ3MGRmIiwidXNlcl9pZCI6IjEifQ.9cyuPK0VFjFX_S5kcTI19lWgxEMfSlnRZnxCtAdf_lY
+
+
+###
+
+POST http://127.0.0.1:8000/api/token/refresh/ HTTP/1.1
+Content-Type: application/json
+
+{
+    "refresh": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc2NjQ4MzMwNywiaWF0IjoxNzY2Mzk2OTA3LCJqdGkiOiJlMjVlZTg0ZDQ2YjI0Zjg1YmNjYzQ2ZTQ0N2IwMzBiYiIsInVzZXJfaWQiOiIxIn0.twutYtpZPuFtmgC1MJbJ_PeXfVtv9SzDQxP_TGl0ZCA"
+}
