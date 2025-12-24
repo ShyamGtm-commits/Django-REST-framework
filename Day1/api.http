@@ -24,13 +24,13 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
 
 POST http://127.0.0.1:8000/products/ HTTP/1.1
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzY2MzkwMzU4LCJpYXQiOjE3NjYzOTAwNTgsImp0aSI6Ijk3NGU4NWI5MjhmYjQ1MTI5ZWNmMWFlN2MwNjQ3MGRmIiwidXNlcl9pZCI6IjEifQ.9cyuPK0VFjFX_S5kcTI19lWgxEMfSlnRZnxCtAdf_lY
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzY2NDg0MDg5LCJpYXQiOjE3NjY0ODM3OTEsImp0aSI6Ijg0NjliZjM5ZTFmMDQzMjI4NGUwYzA5NDkwYjA5MjNmIiwidXNlcl9pZCI6IjEifQ.CaTSbcLLFjptMGyKDoPkXjRfF7V4nma7hOHndkAd34o
 
 {
-    "name": "Mandolorian",
-    "description": "It is the biography of the famous person.  Ohh! sorry not famous he ain't that famous to be called that kind but he had an amazing story to give and here is the story below.",
-    "price": "600.00",
-    "stock": 5
+    "name": "What!",
+    "description": "we will bw back in the morining when the sun starts to rise.",
+    "price": "700.00",
+    "stock": 0
 }
 
 ###
