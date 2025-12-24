@@ -16,6 +16,7 @@ from api.filters import ProductFilter, InStockFilterBackend
 from rest_framework import filters
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.pagination import PageNumberPagination, LimitOffsetPagination
+from rest_framework import viewsets
 
 @api_view(['GET'])
 def home_view(request):
@@ -44,10 +45,10 @@ class ProductListCreateAPIView(generics.ListCreateAPIView):
 
     ordering_filters = ['name', 'price', 'stock']
     pagination_class = LimitOffsetPagination
-    # pagination_class.page_size = 2 
+    # pagination_class.page_size = 2  
     # pagination_class.page_query_param = 'pagenum'
     # pagination_class.page_size_query_param = 'page_size'
-    # pagination_class.max_page_size = 6
+    # pagination_class.max_page_size = 6   # if i am gonna use the pagenumberpagination then i have to uncomment these lines
 
     def get_permissions(self):
         self.permission_classes = [AllowAny]
@@ -80,21 +81,26 @@ class ProductDetailUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
 #     serializer = ProductSerializer(product)
 #     return Response(serializer.data)
 
-
-class OrderListAPIVIew(generics.ListAPIView):
+class OrderViewSet(viewsets.ModelViewSet):
     queryset = Order.objects.prefetch_related('items__product')
     serializer_class = OrderSerializer
+    permission_classes = [AllowAny]
+    pagination_class = None
+
+# class OrderListAPIVIew(generics.ListAPIView):
+#     queryset = Order.objects.prefetch_related('items__product')
+#     serializer_class = OrderSerializer
 
 
-class UserOrderListAPIVIew(generics.ListAPIView):
-    queryset = Order.objects.prefetch_related('items__product')
-    serializer_class = OrderSerializer
-    permission_classes = [IsAuthenticated]
+# class UserOrderListAPIVIew(generics.ListAPIView):
+#     queryset = Order.objects.prefetch_related('items__product')
+#     serializer_class = OrderSerializer
+#     permission_classes = [IsAuthenticated]
 
-    def get_queryset(self):
-        user = self.request.user
-        qs = super().get_queryset()
-        return qs.filter(user=self.request.user)
+#     def get_queryset(self):
+#         user = self.request.user
+#         qs = super().get_queryset()
+#         return qs.filter(user=self.request.user)
 
 
 # @api_view(['GET'])
