@@ -54,7 +54,7 @@ class OrderSerializer(serializers.ModelSerializer):
             'status',
             'items',
             'total_price'
-            )
+        )
         
 class ProductInfoSerializer(serializers.Serializer):
     # get all products, counts and the max_price

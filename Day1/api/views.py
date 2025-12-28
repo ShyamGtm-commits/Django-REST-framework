@@ -1,6 +1,6 @@
 from django.db.models import Max
 from django.shortcuts import get_object_or_404
-from api.serializers import ProductSerializer, OrderSerializer, ProductInfoSerializer
+from api.serializers import ProductSerializer, OrderSerializer, ProductInfoSerializer, OrderItemSerializer
 from api.models import Product, Order, OrderItem
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
@@ -12,23 +12,24 @@ from rest_framework.permissions import (
     AllowAny
     )
 from rest_framework.views import APIView
-from api.filters import ProductFilter, InStockFilterBackend
+from api.filters import ProductFilter, InStockFilterBackend, OrderFilter
 from rest_framework import filters
+from rest_framework.decorators import action
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.pagination import PageNumberPagination, LimitOffsetPagination
 from rest_framework import viewsets
 
-@api_view(['GET'])
-def home_view(request):
-    return Response({
-        'message': 'Welcome to My DRF API',
-        'endpoints': {
-            'products_list': reverse('product-list', request=request),
-            'products_info': reverse('product-info', request=request),
-            'orders_list': reverse('order-list', request=request),
-        },
-        'instructions': 'Use these endpoints to interact with the API'
-    })
+# @api_view(['GET'])
+# def home_view(request):
+#     return Response({
+#         'message': 'Welcome to My DRF API',
+#         'endpoints': {
+#             'products_list': reverse('product-list', request=request),
+#             'products_info': reverse('product-info', request=request),
+#             'orders_list': reverse('order-list', request=request),
+#         },
+#         'instructions': 'Use these endpoints to interact with the API'
+#     })
 
 
 class ProductListCreateAPIView(generics.ListCreateAPIView):
@@ -84,8 +85,28 @@ class ProductDetailUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
 class OrderViewSet(viewsets.ModelViewSet):
     queryset = Order.objects.prefetch_related('items__product')
     serializer_class = OrderSerializer
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
     pagination_class = None
+    filterset_class = OrderFilter
+    filter_backends = [DjangoFilterBackend]
+
+    # to filter the ordered items by user we need to specify the one we are giving
+    def get_queryset(self):
+        qs = super().get_queryset()
+        if not self.request.user.is_staff:
+            qs = qs.filter(user= self.request.user)
+        return qs
+
+    @action(
+            detail=False, 
+            methods=['get'], 
+            url_path='user-orders', 
+        )
+    
+    def user_orders(self, request):
+        orders = self.get_queryset().filter(user=request.user)
+        serializer = self.get_serializer(orders, many= True)
+        return Response(serializer.data)
 
 # class OrderListAPIVIew(generics.ListAPIView):
 #     queryset = Order.objects.prefetch_related('items__product')
@@ -109,7 +130,7 @@ class OrderViewSet(viewsets.ModelViewSet):
 #             'items__product' # items__product is another one that makes this possible and reduces the nested again so we can discard 'items'
 #         ) # we can just kill this .all() items too and later on this another one all can also be killed that isn't anything that matters that seriously
 #     serializer = OrderSerializer(orders, many=True)
-#     return Response(serializer.data)
+    # return Response(serializer.data)
 
 class ProductInfoAPIView(APIView):
     def get(self, request):

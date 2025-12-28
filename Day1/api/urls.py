@@ -3,9 +3,9 @@ from .import views
 from rest_framework.routers import DefaultRouter
 
 urlpatterns = [
-    path('', views.home_view, name='api-root'),
+    # path('', views.home_view, name='api-root'),
     path('products/', views.ProductListCreateAPIView.as_view()),
-    path('products/info/', views.ProductInfoAPIView.as_view),
+    path('products/info/', views.ProductInfoAPIView.as_view()),
     path('products/<int:product_id>/', views.ProductDetailUpdateDestroyAPIView.as_view()),
     # gonna make the viewsets for the order
 ]
