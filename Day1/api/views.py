@@ -91,6 +91,7 @@ class OrderViewSet(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend]
 
     # to filter the ordered items by user we need to specify the one we are giving
+    # actually there's been a mistake and theis is to specify that this section was added prior without the message
     def get_queryset(self):
         qs = super().get_queryset()
         if not self.request.user.is_staff:
