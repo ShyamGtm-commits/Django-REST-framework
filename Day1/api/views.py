@@ -1,6 +1,6 @@
 from django.db.models import Max
 from django.shortcuts import get_object_or_404
-from api.serializers import ProductSerializer, OrderSerializer, ProductInfoSerializer, OrderItemSerializer
+from api.serializers import ProductSerializer, OrderSerializer, ProductInfoSerializer, OrderItemSerializer, OrderCreateSerializer
 from api.models import Product, Order, OrderItem
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
@@ -19,18 +19,6 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.pagination import PageNumberPagination, LimitOffsetPagination
 from rest_framework import viewsets
 
-# @api_view(['GET'])
-# def home_view(request):
-#     return Response({
-#         'message': 'Welcome to My DRF API',
-#         'endpoints': {
-#             'products_list': reverse('product-list', request=request),
-#             'products_info': reverse('product-info', request=request),
-#             'orders_list': reverse('order-list', request=request),
-#         },
-#         'instructions': 'Use these endpoints to interact with the API'
-#     })
-
 
 class ProductListCreateAPIView(generics.ListCreateAPIView):
     queryset = Product.objects.order_by('pk')
@@ -39,7 +27,7 @@ class ProductListCreateAPIView(generics.ListCreateAPIView):
     filter_backends = [
         DjangoFilterBackend, 
         filters.SearchFilter,
-        filters.OrderingFilter,
+        filters.OrderingFilter, 
         InStockFilterBackend
     ]
     search_fields = ['name', 'description']
@@ -56,15 +44,6 @@ class ProductListCreateAPIView(generics.ListCreateAPIView):
         if self.request.method == 'POST':
             self.permission_classes = [IsAdminUser]
         return super().get_permissions()
-
-
-# @api_view(['GET'])
-# def product_list(request):
-#     products = Product.objects.all()
-#     serializer = ProductSerializer(products, many=True)
-#     return Response(serializer.data)
-
-
 class ProductDetailUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
@@ -76,19 +55,23 @@ class ProductDetailUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
             self.permission_classes = [IsAdminUser]
         return super().get_permissions()
 
-# @api_view(['GET'])
-# def product_detail(request, pk):
-#     product = get_object_or_404(Product, pk=pk)
-#     serializer = ProductSerializer(product)
-#     return Response(serializer.data)
-
 class OrderViewSet(viewsets.ModelViewSet):
     queryset = Order.objects.prefetch_related('items__product')
     serializer_class = OrderSerializer
+    # OrderCreateSerializer
     permission_classes = [IsAuthenticated]
     pagination_class = None
     filterset_class = OrderFilter
     filter_backends = [DjangoFilterBackend]
+
+    def perform_create(self, serializer):
+        serializer.save(user = self.request.user)
+
+    def get_serializer_class(self):
+        # can also check if POST: self.request.method == 'POST'
+        if self.action == 'create':
+            return OrderCreateSerializer 
+        return super().get_serializer_class()
 
     # to filter the ordered items by user we need to specify the one we are giving
     # actually there's been a mistake and theis is to specify that this section was added prior without the message
@@ -97,30 +80,6 @@ class OrderViewSet(viewsets.ModelViewSet):
         if not self.request.user.is_staff:
             qs = qs.filter(user= self.request.user)
         return qs
-
-# class OrderListAPIVIew(generics.ListAPIView):
-#     queryset = Order.objects.prefetch_related('items__product')
-#     serializer_class = OrderSerializer
-
-
-# class UserOrderListAPIVIew(generics.ListAPIView):
-#     queryset = Order.objects.prefetch_related('items__product')
-#     serializer_class = OrderSerializer
-#     permission_classes = [IsAuthenticated]
-
-#     def get_queryset(self):
-#         user = self.request.user
-#         qs = super().get_queryset()
-#         return qs.filter(user=self.request.user)
-
-
-# @api_view(['GET'])
-# def order_list(request):
-#     orders = Order.objects.prefetch_related(  # here the prefetch_related is used to reduce the time taken to make the queries and the queries numbers are reduced that were made bigger by the nested serializer
-#             'items__product' # items__product is another one that makes this possible and reduces the nested again so we can discard 'items'
-#         ) # we can just kill this .all() items too and later on this another one all can also be killed that isn't anything that matters that seriously
-#     serializer = OrderSerializer(orders, many=True)
-    # return Response(serializer.data)
 
 class ProductInfoAPIView(APIView):
     def get(self, request):
