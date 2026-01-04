@@ -1,7 +1,7 @@
 from django.db.models import Max
 from django.shortcuts import get_object_or_404
-from api.serializers import ProductSerializer, OrderSerializer, ProductInfoSerializer, OrderItemSerializer, OrderCreateSerializer
-from api.models import Product, Order, OrderItem
+from api.serializers import ProductSerializer, OrderSerializer, ProductInfoSerializer, OrderItemSerializer, OrderCreateSerializer, UserSerializer
+from api.models import Product, Order, OrderItem, User
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework.reverse import reverse
@@ -93,3 +93,8 @@ class ProductInfoAPIView(APIView):
         return Response(serializer.data)
 
 # this is for making the crud functions here in the django rest framework
+
+class UserListView(generics.ListAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    pagination_class = None

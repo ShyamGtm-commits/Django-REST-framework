@@ -1,7 +1,20 @@
 from django.db import transaction
 from rest_framework import serializers
-from .models import Product, Order, OrderItem
+from .models import Product, Order, OrderItem, User
 
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        # Whether i have to have a field in here or exclude
+        fields = (
+            'username',
+            'email',
+            'password',
+            'is_authenticated',
+            'get_full_name',
+            'user_permissions',
+            'orders'
+        )
 
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
