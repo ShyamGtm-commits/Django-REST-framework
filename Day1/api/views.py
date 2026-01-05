@@ -18,7 +18,8 @@ from rest_framework.decorators import action
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.pagination import PageNumberPagination, LimitOffsetPagination
 from rest_framework import viewsets
-
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
 
 class ProductListCreateAPIView(generics.ListCreateAPIView):
     queryset = Product.objects.order_by('pk')
@@ -39,11 +40,21 @@ class ProductListCreateAPIView(generics.ListCreateAPIView):
     # pagination_class.page_size_query_param = 'page_size'
     # pagination_class.max_page_size = 6   # if i am gonna use the pagenumberpagination then i have to uncomment these lines
 
+    @method_decorator(cache_page(60 * 15, key_prefix='product_list'))
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
+
+    def get_queryset(self):
+        import time 
+        time.sleep(2)
+        return super().get_queryset()
+
     def get_permissions(self):
         self.permission_classes = [AllowAny]
         if self.request.method == 'POST':
             self.permission_classes = [IsAdminUser]
         return super().get_permissions()
+    
 class ProductDetailUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
