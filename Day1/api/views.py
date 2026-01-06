@@ -16,7 +16,7 @@ from api.filters import ProductFilter, InStockFilterBackend, OrderFilter
 from rest_framework import filters
 from rest_framework.decorators import action
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework.pagination import PageNumberPagination, LimitOffsetPagination
+# from rest_framework.pagination import PageNumberPagination, LimitOffsetPagination
 from rest_framework import viewsets
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
@@ -34,8 +34,9 @@ class ProductListCreateAPIView(generics.ListCreateAPIView):
     ]
     search_fields = ['name', 'description']
 
-    ordering_filters = ['name', 'price', 'stock']
-    pagination_class = LimitOffsetPagination
+    ordering_fields = ['name', 'price', 'stock']
+    pagination_class = None
+    # pagination_class = LimitOffsetPagination
     # pagination_class.page_size = 2  
     # pagination_class.page_query_param = 'pagenum'
     # pagination_class.page_size_query_param = 'page_size'
@@ -109,5 +110,4 @@ class ProductInfoAPIView(APIView):
 class UserListView(generics.ListAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    pagination_class = None
     permission_classes = [IsAdminUser]
