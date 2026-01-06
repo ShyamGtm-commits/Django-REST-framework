@@ -138,14 +138,17 @@ REST_FRAMEWORK = {
     # 'PAGE_SIZE': None,
     'DEFAULT_THROTTLE_CLASSES': [
         'rest_framework.throttling.AnonRateThrottle',
-        'api.throttles.BurstRateThrottle',
-        'api.throttles.SustainedRateThrottle',
+        'rest_framework.throttling.ScopedRateThrottle',
+        # 'api.throttles.BurstRateThrottle',
+        # 'api.throttles.SustainedRateThrottle',
     ],
     'DEFAULT_THROTTLE_RATES': {
         'anon': '2/minute', # this is for the anonymous user meaning that they aren't users
         # 'user': '2/minute', # this s for the authenticated users
-        'burst': '10/minute', # represents short term rapid fire request
-        'sustained': '15/hour',
+        # 'burst': '10/minute', # represents short term rapid fire request
+        # 'sustained': '15/hour',
+        'products': '4/minute',
+        'orders': '4/minute',
 
     }
 }
