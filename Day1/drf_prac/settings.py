@@ -148,7 +148,7 @@ SPECTACULAR_SETTINGS = {
 
 SIMPLE_JWT = {
     # Adjust access token lifespan
-    'ACCESS_TOKEN_LIFETIME': timedelta(days=7),  
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),  
     'REFRESH_TOKEN_LIFETIME': timedelta(days=7),     
 }
 

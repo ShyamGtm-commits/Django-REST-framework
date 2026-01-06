@@ -7,13 +7,11 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         # Whether i have to have a field in here or exclude
         fields = (
+            'id',
             'username',
             'email',
-            'password',
-            'is_authenticated',
-            'get_full_name',
-            'user_permissions',
-            'orders'
+            'first_name',
+            'last_name',
         )
 
 class ProductSerializer(serializers.ModelSerializer):
@@ -80,7 +78,7 @@ class OrderCreateSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         orderitem_data = validated_data.pop('items')
 
-        with transaction.atmoic():
+        with transaction.atomic():
             order = Order.objects.create(**validated_data)
 
             for item in orderitem_data:

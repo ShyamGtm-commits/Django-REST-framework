@@ -20,6 +20,7 @@ from rest_framework.pagination import PageNumberPagination, LimitOffsetPaginatio
 from rest_framework import viewsets
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
+from django.views.decorators.vary import vary_on_headers
 
 class ProductListCreateAPIView(generics.ListCreateAPIView):
     queryset = Product.objects.order_by('pk')
@@ -40,7 +41,7 @@ class ProductListCreateAPIView(generics.ListCreateAPIView):
     # pagination_class.page_size_query_param = 'page_size'
     # pagination_class.max_page_size = 6   # if i am gonna use the pagenumberpagination then i have to uncomment these lines
 
-    @method_decorator(cache_page(60 * 15, key_prefix='product_list'))
+    @method_decorator(cache_page(60 * 15))
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
 
@@ -109,3 +110,4 @@ class UserListView(generics.ListAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     pagination_class = None
+    permission_classes = [IsAdminUser]
