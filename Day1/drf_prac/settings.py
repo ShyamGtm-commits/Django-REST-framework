@@ -138,7 +138,7 @@ REST_FRAMEWORK = {
     # 'PAGE_SIZE': None,
     'DEFAULT_THROTTLE_CLASSES': [
         'rest_framework.throttling.AnonRateThrottle',
-        'rest_framework.throttling.ScopedRateThrottle',
+        # 'rest_framework.throttling.ScopedRateThrottle', # this shit is silenced because i want to do on the pair view basis for each scope
         # 'api.throttles.BurstRateThrottle',
         # 'api.throttles.SustainedRateThrottle',
     ],
