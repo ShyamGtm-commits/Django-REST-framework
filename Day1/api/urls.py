@@ -6,7 +6,7 @@ urlpatterns = [
     # path('', views.home_view, name='api-root'),
     path('products/', views.ProductListCreateAPIView.as_view()),
     path('products/info/', views.ProductInfoAPIView.as_view()),
-    path('products/<int:product_id>/', views.ProductDetailUpdateDestroyAPIView.as_view()),
+    path('products/<int:product_id>/', views.ProductDetailUpdateDestroyAPIView.as_view(), name='product-detail'),
     path('users/', views.UserListView.as_view()),
     # gonna make the viewsets for the order
 ]
